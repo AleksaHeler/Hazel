@@ -10,6 +10,11 @@ extern Hazel::Application* Hazel::CreateApplication();
 
 // Create applicaion, run it and then delete it
 int main(int argc, char** argv) {
+	float var = 1.521f;
+	Hazel::Log::Init();
+	HZ_CORE_WARN("Initialized Log!");
+	HZ_INFO("Hello! Var={0}", var);
+
 	auto app = Hazel::CreateApplication();
 	app->Run();
 	delete app;
