@@ -4,7 +4,6 @@
 //  CoreLogger: for the actual engine ("Hazel")
 //  ClientLogger: for the App ("App")
 
-#include <memory>
 #include "Core.h"
 #include "spdlog/spdlog.h"
 #include "spdlog/fmt/ostr.h"

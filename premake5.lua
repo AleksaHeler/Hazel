@@ -12,6 +12,12 @@ workspace "Hazel"
 -- outputdir = Debug-Windows-x64
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
+-- include directories relative to root folder (solution directory)
+IncludeDir = {}
+IncludeDir["GLFW"] = "Hazel/vendor/GLFW/include"
+
+include "Hazel/vendor/GLFW"
+
 -- Defining specifig projects
 project "Hazel"
 	location "Hazel"
@@ -21,6 +27,10 @@ project "Hazel"
 	-- output directories
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+	-- precompiled headers header file
+	pchheader "hzpch.h"
+	pchsource "Hazel/src/hzpch.cpp"
 
 	-- project files
 	files 
@@ -34,7 +44,13 @@ project "Hazel"
 	includedirs
 	{
 		"%{prj.name}/src",
-		"%{prj.name}/vendor/spdlog/include"
+		"%{prj.name}/vendor/spdlog/include",
+		"%{IncludeDir.GLFW}"
+	}
+
+	links{
+		"GLFW",
+		"opengl32.lib"
 	}
 
 	-- only applies to windows
@@ -46,7 +62,8 @@ project "Hazel"
 		defines
 		{
 			"HZ_PLATFORM_WINDOWS",
-			"HZ_BUILD_DLL"
+			"HZ_BUILD_DLL",
+			"HZ_ENABLE_ASSERTS"
 			-- we may need "_WINDLL" here
 		}
 

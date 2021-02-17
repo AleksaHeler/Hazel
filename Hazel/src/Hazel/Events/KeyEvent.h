@@ -5,8 +5,6 @@
 
 #include "Event.h"
 
-#include <sstream>
-
 namespace Hazel {
 
 	// Key event base class

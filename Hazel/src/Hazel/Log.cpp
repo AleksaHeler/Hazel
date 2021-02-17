@@ -1,3 +1,4 @@
+#include "hzpch.h"
 #include "Log.h"
 // Defining a Log class which will serve as a wrapper for spdlog api
 
