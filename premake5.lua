@@ -33,6 +33,7 @@ project "Hazel"
 	-- include directory
 	includedirs
 	{
+		"%{prj.name}/src",
 		"%{prj.name}/vendor/spdlog/include"
 	}
 
@@ -40,7 +41,7 @@ project "Hazel"
 	filter "system:windows"
 		cppdialect "C++17"
 		staticruntime "On"
-		systemversion "latest" -- or 10.0.18362.0
+		systemversion "latest"
 
 		defines
 		{

@@ -3,6 +3,7 @@
 // Declaring function CreateApplication() which will be defined in Client
 
 #include "Core.h"
+#include "Events/Event.h"
 
 namespace Hazel {
 
