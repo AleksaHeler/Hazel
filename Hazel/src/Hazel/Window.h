@@ -28,6 +28,7 @@ namespace Hazel {
 	// Because this has to be implemented per platform
 	class HAZEL_API Window {
 	public:
+		// This is just a standard function which returns void and takes Event as an argument
 		using EventCallbackFn = std::function<void(Event&)>;
 
 		// Virtual destructor
