@@ -2,7 +2,9 @@
 #include "Application.h"
 // Defining Run() function of the Application class
 
-#include <GLFW/glfw3.h>
+#include "Hazel/Log.h"
+
+#include <glad/glad.h>
 
 namespace Hazel {
 
