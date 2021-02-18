@@ -11,10 +11,18 @@ namespace Hazel {
 // Bind function (x) as event callback function
 #define BIND_EVENT_FN(x) std::bind(&Application::x, this, std::placeholders::_1)
 
+	// Singleton
+	Application* Application::s_Instance = nullptr;
+
 	// Constructor
 	Application::Application() {
+		// Singleton
+		HZ_CORE_ASSERT(!s_Instance, "Application already exists!");
+		s_Instance = this;
+
 		// Create a window
 		m_Window = std::unique_ptr<Window>(Window::Create());
+
 		// Bind OnEvent function as event callback fn
 		m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
 	}
@@ -25,11 +33,13 @@ namespace Hazel {
 	// PushLayer
 	void Application::PushLayer(Layer* layer) {
 		m_LayerStack.PushLayer(layer);
+		layer->OnAttach();
 	}
 
 	// PushOverlay
 	void Application::PushOverlay(Layer* layer) {
 		m_LayerStack.PushOverlay(layer);
+		layer->OnAttach();
 	}
 
 	// OnEvent
@@ -54,9 +64,8 @@ namespace Hazel {
 	// Run
 	void Application::Run() {
 		while (m_Running) {
-			// Set a pink window
-			glClearColor(1, 1, 0, 1);
-			//glClearColor(1, 0, 1, 1);
+			// Set window color
+			glClearColor(0.416, 0.051, 0.769, 1);
 			glClear(GL_COLOR_BUFFER_BIT);
 
 			// Call OnUpdate functions in all layers
