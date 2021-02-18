@@ -20,6 +20,16 @@ namespace Hazel {
 	// Destructor
 	Application::~Application() {}
 
+	// PushLayer
+	void Application::PushLayer(Layer* layer) {
+		m_LayerStack.PushLayer(layer);
+	}
+
+	// PushOverlay
+	void Application::PushOverlay(Layer* layer) {
+		m_LayerStack.PushOverlay(layer);
+	}
+
 	// OnEvent
 	void Application::OnEvent(Event& e) {
 		// Create event dispatcher and bind the right function for specific event
@@ -27,7 +37,16 @@ namespace Hazel {
 		dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClose));
 
 		// Log all events
-		HZ_CORE_TRACE("{0}", e);
+		// HZ_CORE_TRACE("{0}", e);
+
+		// Go backwards trough the layer stack and pass events
+		// If the event has already been handled dont continue
+		// So if the overlay handles an event that is it, other layers wont get it
+		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin(); ) {
+			(*--it)->OnEvent(e);
+			if (e.IsHandled())
+				break;
+		}
 	}
 
 	// Run
@@ -37,6 +56,11 @@ namespace Hazel {
 			glClearColor(1, 1, 0, 1);
 			//glClearColor(1, 0, 1, 1);
 			glClear(GL_COLOR_BUFFER_BIT);
+
+			// Call OnUpdate functions in all layers
+			for (Layer* layer : m_LayerStack)
+				layer->OnUpdate();
+
 			// Call on update every frame
 			m_Window->OnUpdate();
 		}

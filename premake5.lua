@@ -76,16 +76,19 @@ project "Hazel"
 	-- only applies to Debug
 	filter "configurations:Debug"
 		defines "HZ_DEBUG"
+		buildoptions "/MDd" -- multithreading debug dll
 		symbols "On"
 
 	-- only applies to Release
 	filter "configurations:Release"
 		defines "HZ_RELEASE"
+		buildoptions "/MD" -- multithreading dll
 		optimize "On"
 
 	-- only applies to debug versions
 	filter "configurations:Dist"
 		defines "HZ_DIST"
+		buildoptions "/MD" -- multithreading dll
 		optimize "On"
 	
 	-- enable multithreading on Release on windows
@@ -138,15 +141,18 @@ project "Sandbox"
 	-- only applies to Debug
 	filter "configurations:Debug"
 		defines "HZ_DEBUG"
+		buildoptions "/MDd" -- multithreading debug dll
 		symbols "On"
 
 	-- only applies to Release
 	filter "configurations:Release"
 		defines "HZ_RELEASE"
+		buildoptions "/MD" -- multithreading dll
 		optimize "On"
 
 	-- only applies to debug versions
 	filter "configurations:Dist"
 		defines "HZ_DIST"
+		buildoptions "/MD" -- multithreading dll
 		optimize "On"
 	

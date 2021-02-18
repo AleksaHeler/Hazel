@@ -49,6 +49,9 @@ namespace Hazel {
 		inline bool IsInCategory(EventCategory category) {
 			return GetCategoryFlags() & category;
 		}
+		inline bool IsHandled() {
+			return m_Handled;
+		}
 	protected:
 		// Has the event been handled
 		bool m_Handled = false;
