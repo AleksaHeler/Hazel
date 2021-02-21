@@ -2,7 +2,7 @@
 .vs/
 bin/
 bin-int/
-!vendors/bin/
+!vendor/bin/
 
 # Files
 *.user
