@@ -1,16 +1,21 @@
 #include "hzpch.h"
 #include "ImGuiLayer.h"
 
+#include "Hazel/Core.h"
+
 #include "imgui.h"
 #include "Platform/OpenGL/ImGuiOpenGLRenderer.h"
-#include "GLFW/glfw3.h" // This is temporary
 
 #include "Hazel/Application.h"
+
+// TEMPORARY
+#include <GLFW/glfw3.h>
+#include <glad/glad.h>
 
 namespace Hazel {
 
 	// Constructor
-	ImGuiLayer::ImGuiLayer() 
+	ImGuiLayer::ImGuiLayer()
 		: Layer("ImGuiLayer") {}
 
 	// Destructor
@@ -85,7 +90,92 @@ namespace Hazel {
 
 	// OnEvent
 	void ImGuiLayer::OnEvent(Event& event) {
+		// Create a dispatcher
+		EventDispatcher dispatcher(event);
+		// Tell it to call this function when this event type is found
+		dispatcher.Dispatch<MouseButtonPressedEvent>(HZ_BIND_EVENT_FN(ImGuiLayer::OnMouseButtonPressedEvent));
+		dispatcher.Dispatch<MouseButtonReleasedEvent>(HZ_BIND_EVENT_FN(ImGuiLayer::OnMouseButtonReleasedEvent));
+		dispatcher.Dispatch<MouseMovedEvent>(HZ_BIND_EVENT_FN(ImGuiLayer::OnMouseMovedEvent));
+		dispatcher.Dispatch<MouseScrolledEvent>(HZ_BIND_EVENT_FN(ImGuiLayer::OnMouseScrolledEvent));
+		dispatcher.Dispatch<KeyPressedEvent>(HZ_BIND_EVENT_FN(ImGuiLayer::OnKeyPressedEvent));
+		dispatcher.Dispatch<KeyTypedEvent>(HZ_BIND_EVENT_FN(ImGuiLayer::OnKeyTypedEvent));
+		dispatcher.Dispatch<KeyReleasedEvent>(HZ_BIND_EVENT_FN(ImGuiLayer::OnKeyReleasedEvent));
+		dispatcher.Dispatch<WindowResizeEvent>(HZ_BIND_EVENT_FN(ImGuiLayer::OnWindowResizeEvent));
+	}
 
+	// OnMouseButtonPressedEvent
+	bool ImGuiLayer::OnMouseButtonPressedEvent(MouseButtonPressedEvent& e) {
+		// Get io and set the mouse button pressed parameter to true
+		ImGuiIO& io = ImGui::GetIO();
+		io.MouseDown[(int)e.GetMouseButton()] = true;
+		return false;
+	}
+
+	// OnMouseButtonReleasedEvent
+	bool ImGuiLayer::OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& e) {
+		// Get io and set the mouse button pressed parameter to false
+		ImGuiIO& io = ImGui::GetIO();
+		io.MouseDown[(int)e.GetMouseButton()] = false;
+
+		return false;
+	}
+
+	// OnMouseMovedEvent
+	bool ImGuiLayer::OnMouseMovedEvent(MouseMovedEvent& e) {
+		ImGuiIO& io = ImGui::GetIO(); // Get the IO
+		io.MousePos = ImVec2(e.GetX(), e.GetY());
+
+		return false;
+	}
+
+	// OnMouseScrolledEvent
+	bool ImGuiLayer::OnMouseScrolledEvent(MouseScrolledEvent& e) {
+		ImGuiIO& io = ImGui::GetIO(); // Get the IO
+		io.MouseWheelH += e.GetXOffset();
+		io.MouseWheel += e.GetYOffset();
+
+		return false;
+	}
+
+	// OnKeyPressedEvent
+	bool ImGuiLayer::OnKeyPressedEvent(KeyPressedEvent& e) {
+		// Get the IO
+		ImGuiIO& io = ImGui::GetIO();
+		// Set key state
+		io.KeysDown[e.GetKeyCode()] = true;
+		// Are modifier keys pressed
+		io.KeyCtrl = io.KeysDown[GLFW_KEY_LEFT_CONTROL] || io.KeysDown[GLFW_KEY_RIGHT_CONTROL];
+		io.KeyShift = io.KeysDown[GLFW_KEY_LEFT_SHIFT] || io.KeysDown[GLFW_KEY_RIGHT_SHIFT];
+		io.KeyAlt = io.KeysDown[GLFW_KEY_LEFT_ALT] || io.KeysDown[GLFW_KEY_RIGHT_ALT];
+		io.KeySuper = io.KeysDown[GLFW_KEY_LEFT_SUPER] || io.KeysDown[GLFW_KEY_RIGHT_SUPER];
+		return false;
+	}
+
+	// OnKeyReleasedEvent
+	bool ImGuiLayer::OnKeyReleasedEvent(KeyReleasedEvent& e) {
+		ImGuiIO& io = ImGui::GetIO();
+		io.KeysDown[e.GetKeyCode()] = false;
+		return false;
+	}
+
+	// OnKeyTypedEvent
+	bool ImGuiLayer::OnKeyTypedEvent(KeyTypedEvent& e){
+		// Get the IO, get the keycode from event, and add it as input char
+		ImGuiIO& io = ImGui::GetIO();
+		int keycode = e.GetKeyCode();
+		if (keycode > 0 && keycode < 0x10000)
+			io.AddInputCharacter((unsigned short)keycode);
+		return false;
+	}
+
+	// OnWindowResizeEvent
+	bool ImGuiLayer::OnWindowResizeEvent(WindowResizeEvent& e) {
+		ImGuiIO& io = ImGui::GetIO(); // Get the IO
+		io.DisplaySize = ImVec2(e.GetWidth(), e.GetHeight());
+		io.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
+		// This is a sin
+		glViewport(0, 0, e.GetWidth(), e.GetHeight());
+		return false;
 	}
 
 	// OnDetach

@@ -109,6 +109,13 @@ namespace Hazel {
 			}
 		});
 
+		glfwSetCharCallback(m_Window, [](GLFWwindow* window, unsigned int keycode) {
+			// Get the window data, create event and dispatch it
+			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+			KeyTypedEvent event(keycode);
+			data.EventCallback(event);
+		});
+
 		// Set GLFW callback for mouse button event, using a lambda function
 		glfwSetMouseButtonCallback(m_Window, [](GLFWwindow* window, int button, int action, int mods) {
 			// Get the window data

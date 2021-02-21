@@ -21,3 +21,6 @@
 
 // Bit shift by x
 #define BIT(x) (1 << x)
+
+// Binding funtions to event types for event dispatching
+#define HZ_BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)
