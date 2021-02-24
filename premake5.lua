@@ -28,6 +28,7 @@ project "Hazel"
 	location "Hazel"
 	kind "SharedLib"
 	language "C++"
+	staticruntime "off"
 
 	-- output directories
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
@@ -65,15 +66,13 @@ project "Hazel"
 	-- only applies to windows
 	filter "system:windows"
 		cppdialect "C++17"
-		staticruntime "On"
 		systemversion "latest"
 
 		defines
 		{
 			"HZ_PLATFORM_WINDOWS",
 			"HZ_BUILD_DLL",
-			"GLFW_INCLUDE_NONE", -- so Glad wont include any OpenGL headers when including GLFW
-			"HZ_ENABLE_ASSERTS"
+			"GLFW_INCLUDE_NONE" -- so Glad wont include any OpenGL headers when including GLFW
 			-- we may need "_WINDLL" here
 		}
 
@@ -113,6 +112,7 @@ project "Sandbox"
 	location "Sandbox"
 	kind "ConsoleApp"
 	language "C++"
+	staticruntime "off"
 
 	-- output directories
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
@@ -142,7 +142,6 @@ project "Sandbox"
 	-- only applies to windows
 	filter "system:windows"
 		cppdialect "C++17"
-		staticruntime "On"
 		systemversion "latest" -- or 10.0.18362.0
 
 		defines
