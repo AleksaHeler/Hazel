@@ -22,6 +22,9 @@ include "Hazel/vendor/GLFW"
 include "Hazel/vendor/Glad"
 include "Hazel/vendor/imgui"
 
+-- startup project
+startproject "Sandbox"
+
 -- Defining specifig projects
 project "Hazel"
 	location "Hazel"
@@ -79,25 +82,28 @@ project "Hazel"
 		-- post build step to put .dll where it needs to be
 		postbuildcommands
 		{
+			-- TODO: try finding out what can be done if the dest folder for copy doesnt exist
+			-- Moving postbuildcommands to Sandbox proj is not a good idea because if we only change Hazel,
+			-- and only Hazel is built it will not copy the newest dll file to Sandbox
 			("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/Sandbox")
 		}
 		
 	-- only applies to Debug
 	filter "configurations:Debug"
 		defines "HZ_DEBUG"
-		buildoptions "/MDd" -- multithreading debug dll
+		runtime "Debug" -- multithreading debug dll
 		symbols "On"
 
 	-- only applies to Release
 	filter "configurations:Release"
 		defines "HZ_RELEASE"
-		buildoptions "/MD" -- multithreading dll
+		runtime "Release" -- multithreading dll
 		optimize "On"
 
 	-- only applies to debug versions
 	filter "configurations:Dist"
 		defines "HZ_DIST"
-		buildoptions "/MD" -- multithreading dll
+		runtime "Release" -- multithreading dll
 		optimize "On"
 	
 	-- enable multithreading on Release on windows
