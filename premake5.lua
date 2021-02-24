@@ -1,6 +1,7 @@
 -- Defining solution/workspace
 workspace "Hazel"
 	architecture "x64"
+	startproject "Sandbox"
 	
 	configurations
 	{
@@ -21,9 +22,6 @@ IncludeDir["ImGui"] = "Hazel/vendor/imgui"
 include "Hazel/vendor/GLFW"
 include "Hazel/vendor/Glad"
 include "Hazel/vendor/imgui"
-
--- startup project
-startproject "Sandbox"
 
 -- Defining specifig projects
 project "Hazel"
