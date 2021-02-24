@@ -85,7 +85,8 @@ project "Hazel"
 			-- TODO: try finding out what can be done if the dest folder for copy doesnt exist
 			-- Moving postbuildcommands to Sandbox proj is not a good idea because if we only change Hazel,
 			-- and only Hazel is built it will not copy the newest dll file to Sandbox
-			("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/Sandbox")
+			-- old: ("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/Sandbox")
+			("{COPY} %{cfg.buildtarget.relpath} \"../bin/" .. outputdir .. "/Sandbox/\"")
 		}
 		
 	-- only applies to Debug
