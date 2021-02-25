@@ -30,9 +30,10 @@ group ""
 -- Defining specifig projects
 project "Hazel"
 	location "Hazel"
-	kind "SharedLib"
+	kind "StaticLib"
 	language "C++"
-	staticruntime "off"
+	cppdialect "C++17"
+	staticruntime "on"
 
 	-- output directories
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
@@ -50,6 +51,12 @@ project "Hazel"
 		"%{prj.name}/src/**.cpp",
 		"%{prj.name}/vendor/glm/glm/**.hpp",
 		"%{prj.name}/vendor/glm/glm/**.inl"
+	}
+
+	defines
+	{
+			-- Suppress unsafe function warnings (strcpy, strcat, sscanf)
+			"_CRT_SECURE_NO_WARNINGS" 
 	}
 
 	-- include directory
@@ -72,7 +79,6 @@ project "Hazel"
 
 	-- only applies to windows
 	filter "system:windows"
-		cppdialect "C++17"
 		systemversion "latest"
 
 		defines
@@ -82,34 +88,24 @@ project "Hazel"
 			"GLFW_INCLUDE_NONE" -- so Glad wont include any OpenGL headers when including GLFW
 			-- we may need "_WINDLL" here
 		}
-
-		-- post build step to put .dll where it needs to be
-		postbuildcommands
-		{
-			-- TODO: try finding out what can be done if the dest folder for copy doesnt exist
-			-- Moving postbuildcommands to Sandbox proj is not a good idea because if we only change Hazel,
-			-- and only Hazel is built it will not copy the newest dll file to Sandbox
-			-- old: ("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/Sandbox")
-			("{COPY} %{cfg.buildtarget.relpath} \"../bin/" .. outputdir .. "/Sandbox/\"")
-		}
 		
 	-- only applies to Debug
 	filter "configurations:Debug"
 		defines "HZ_DEBUG"
 		runtime "Debug" -- multithreading debug dll
-		symbols "On"
+		symbols "on" -- debug version of the runtime library
 
 	-- only applies to Release
 	filter "configurations:Release"
 		defines "HZ_RELEASE"
 		runtime "Release" -- multithreading dll
-		optimize "On"
+		optimize "on" -- release version of the runtime library
 
 	-- only applies to debug versions
 	filter "configurations:Dist"
 		defines "HZ_DIST"
 		runtime "Release" -- multithreading dll
-		optimize "On"
+		optimize "on" -- release version of the runtime library
 	
 	-- enable multithreading on Release on windows
 	filter { "system:windows", "configurations:Release" }
@@ -120,7 +116,8 @@ project "Sandbox"
 	location "Sandbox"
 	kind "ConsoleApp"
 	language "C++"
-	staticruntime "off"
+	cppdialect "C++17"
+	staticruntime "on"
 
 	-- output directories
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
@@ -151,7 +148,6 @@ project "Sandbox"
 
 	-- only applies to windows
 	filter "system:windows"
-		cppdialect "C++17"
 		systemversion "latest" -- or 10.0.18362.0
 
 		defines
@@ -164,17 +160,17 @@ project "Sandbox"
 	filter "configurations:Debug"
 		defines "HZ_DEBUG"
 		runtime "Debug"-- multithreading debug dll
-		symbols "On"
+		symbols "on"
 
 	-- only applies to Release
 	filter "configurations:Release"
 		defines "HZ_RELEASE"
 		runtime "Release" -- multithreading dll
-		optimize "On"
+		optimize "on"
 
 	-- only applies to debug versions
 	filter "configurations:Dist"
 		defines "HZ_DIST"
 		runtime "Release" -- multithreading dll
-		optimize "On"
+		optimize "on"
 	
