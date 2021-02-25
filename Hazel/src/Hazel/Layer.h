@@ -13,6 +13,7 @@ namespace Hazel {
 		virtual void OnAttach() {}
 		virtual void OnDetach() {}
 		virtual void OnUpdate() {}
+		virtual void OnImGuiRender() {}
 		// When event is sent to the layer, we receive it here
 		virtual void OnEvent(Event& event) {}
 

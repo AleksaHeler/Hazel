@@ -27,10 +27,15 @@ namespace Hazel {
 
 		// Bind OnEvent function as event callback fn
 		m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
+
+		m_ImGuiLayer = new ImGuiLayer();
+		PushOverlay(m_ImGuiLayer);
 	}
 
 	// Destructor
-	Application::~Application() {}
+	Application::~Application() {
+	
+	}
 
 	// PushLayer
 	void Application::PushLayer(Layer* layer) {
@@ -77,6 +82,11 @@ namespace Hazel {
 			// Log mouse position
 			// auto [x, y] = Input::GetMousePosition();
 			// HZ_CORE_TRACE("{0}, {1}", x, y);
+
+			m_ImGuiLayer->Begin();
+			for (Layer* layer : m_LayerStack)
+				layer->OnImGuiRender();
+			m_ImGuiLayer->End();
 
 			// Call on update every frame
 			m_Window->OnUpdate();
